@@ -1,4 +1,6 @@
 # Disaster Response Pipeline Project
+### Summary: 
+The primary goal of this project is to develop a model which can be exposed via a flask application which provides a easy way to categorize the disaster related messages into one of the 36 categories.
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
