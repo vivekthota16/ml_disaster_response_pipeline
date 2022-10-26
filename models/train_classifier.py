@@ -1,6 +1,8 @@
+"""
+Python file to train classifier (ML pipeline)
+"""
 import sys
 import dill as pickle
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
@@ -41,6 +43,8 @@ def tokenize(text):
     words_lemmed = [lemmatizer.lemmatize(tok)
                     for tok in stemmed if tok not in stop_words]
     return words_lemmed
+
+# pylint: disable='line-too-long'
 
 
 def build_model():
