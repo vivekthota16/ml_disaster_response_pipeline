@@ -27,6 +27,11 @@ nltk.download('averaged_perceptron_tagger')
 
 
 def load_data(database_filepath):
+    """
+    function to load data from sqlite database
+    :param str database_filepath: location of db file
+    :return X(features), Y(labels), list of column names of Y
+    """
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('etlpipeline', engine)
     X = df['message']
@@ -35,6 +40,11 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    """
+    function to tokenize text (perform word tokenization, stemming and lemmatization using nltk)
+    :parm str text
+    :return words_lemmed: lemmatized words
+    """
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     stop_words = stopwords.words("english")
     tokens = word_tokenize(text)
@@ -48,6 +58,10 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    function to initialize pipeline for training model
+    :return GridSearchCV object gcv: object with pipeline and parameters
+    """
     pipeline = Pipeline([('vect', CountVectorizer(tokenizer=tokenize)),
                          ('tfidf', TfidfTransformer()),
                          ('clf', MultiOutputClassifier(estimator=RandomForestClassifier(n_jobs=-1)))])
@@ -61,19 +75,32 @@ def build_model():
     return gcv
 
 
-def evaluate_model(model, X_test, Y_test, category_names):
-    y_pred = model.predict(X_test)
-    y_pred_df_improved = pd.DataFrame(y_pred, columns=category_names)
-    for each in y_pred_df_improved.columns:
-        print(f"Classification Report for the columns: {each}")
-        print(classification_report(y_pred_df_improved[each], Y_test[each]))
+def evaluate_model(model, x_test, y_test, category_names):
+    """
+    function to evaluate model performance
+    :param object model: model to perform prediction
+    :param dataframe x_test: test data
+    :param dataframe y_test: test labels data
+    :param list category_names: list of category_names
+    """
+    y_pred = model.predict(x_test)
+    y_pred_df = pd.DataFrame(y_pred, columns=category_names)
+    print(classification_report(y_test, y_pred_df, category_names))
 
 
 def save_model(model, model_filepath):
+    """
+    function to save model in provided file path as .pkl file
+    :param object model: model to save 
+    :param str model_filepath: location to save the model 
+    """
     pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
+    """
+    main function
+    """
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
@@ -90,7 +117,7 @@ def main():
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
 
-        print('Saving model...\n    MODEL: {}'.format(model_filepath))
+        print(f'Saving model...\n    MODEL: {model_filepath}')
         save_model(model, model_filepath)
 
         print('Trained model saved!')

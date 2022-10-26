@@ -10,6 +10,9 @@ from sqlalchemy import create_engine
 def load_data(messages_filepath, categories_filepath):
     """
     load data from files to pandas dataframe
+    :param str messages_filepath: location of messages csv file
+    :param str categories_filepath: location of categories csv file
+    :return: raw_df
     """
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
@@ -18,6 +21,11 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(raw_df):
+    """
+    python function to clean the data
+    :param dataframe raw_df: raw dataframe to be cleaned
+    :return: cleaned_df
+    """
     categories = raw_df.categories.str.split(';', expand=True)
     row = categories.iloc[0]
     category_colnames = row.apply(lambda x: x.split("-")[0])
@@ -37,11 +45,19 @@ def clean_data(raw_df):
 
 
 def save_data(cleaned_df, database_filename):
+    """
+    Python function to save cleaned data  in sqlite database
+    :param dataframe cleaned_df
+    :param str database_filename
+    """
     engine = create_engine(f'sqlite:///{database_filename}')
     cleaned_df.to_sql('etlpipeline', engine, index=False, if_exists='replace')
 
 
 def main():
+    """
+    main function
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
