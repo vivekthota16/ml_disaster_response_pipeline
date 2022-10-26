@@ -2,6 +2,13 @@
 ### Summary: 
 The primary goal of this project is to develop a model which can be exposed via a flask application which provides a easy way to categorize the disaster related messages into one of the 36 categories.
 
+### Files:
+- data\process_data.py - ETL pipeline to process, clean the data and save it into database.
+- models\train_classifier.py - ML pipeline to train the model based on cleaned data and save the model into .pkl file
+- models\classifier.pkl - Saved model parameters
+- app\run.py - Flask application with endpoints (loads test data and saved model) 
+- requirements.txt - List of all python libraries used for the whole application. 
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
