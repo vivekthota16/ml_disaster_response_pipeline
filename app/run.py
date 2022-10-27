@@ -41,13 +41,35 @@ model = joblib.load("../models/classifier.pkl")
 def index():
 
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
+    related_counts = df.related.value_counts()
+    related_names = list(related_counts.index)
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        {
+            'data': [
+                Bar(
+                    x=related_names,
+                    y=related_counts,
+                    marker=dict(
+                        color=['rgb(212, 228, 247)', 'rgba(107, 107, 107,1)'])
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Disaster Related Messages',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Related"
+                }
+
+            }
+
+        },
         {
             'data': [
                 Bar(
